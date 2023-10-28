@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      const observer = new MutationObserver((mutations) => {
+        for (let mutation of mutations) {
+          for (let node of mutation.addedNodes) {
+            if (!(node instanceof HTMLElement)) {
+              continue;
+            }
+            if (node.matches("h1")) {
+              console.log(node);
+            }
+            if (node.matches("button.dialog")) {
+              console.log(node);
+              (async () => {
+                let logic = await import("../src/dialog.js");
+                console.log(logic);
+                logic.default(node);
+              })();
+            }
+          }
+        }
+      });
+
+      observer.observe(document, { childList: true, subtree: true });
+    </script>
+    <title>Hydro Homie Test</title>
+  </head>
+  <body>
+    <h1>Hello world</h1>
+    <h2>But not to you</h2>
+
+    <button>I don't do anything</button>
+    <button class="dialog" data-target="dialog-1">I open a dialog</button>
+
+    <dialog id="dialog-1" close>
+      <p>Welcome to my dialog</p>
+      <form method="dialog"><button>Close</button></form>
+    </dialog>
+  </body>
+</html>
